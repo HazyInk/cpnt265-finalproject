@@ -3,6 +3,7 @@ const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 720;
+let enemies = [];
 
 class InputHandler {
   constructor(){
@@ -33,23 +34,28 @@ class Player {
     constructor(gameWidth, gameHeight){
       this.gameWidth = gameWidth;
       this.gameHeight = gameHeight;
-      this.width = 200;
-      this.height = 200;
+      this.width = 355;
+      this.height = 350;
       this.x = 0;
       this.y = this.gameHeight - this.height;
       this.image = document.getElementById('playerImage');
       this.frameX = 0;
+      this.maxFrame = 7;
       this.frameY = 0;
+      //this.fps = 20;
+      //this.frameTimer = 0;
+      //this.frameInterval = 1000/this.fps;
       this.speed = 0;
       this.vy = 0;
       this.weight = 1;
     }
     draw(context){
-      context.fillStyle = 'white';
-      context.fillRect(this.x, this.y, this.width, this.height);
+      //context.fillRect(this.x, this.y, this.width, this.height);
       context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
-    update(input){
+    update(input, deltaTime){
+        if (this.frameX >= this.maxFrame) this.frameX = 0;
+        else this.frameX++;
         //keys
         if (input.keys.indexOf('ArrowRight') > -1){
           this.speed = 5;
@@ -114,15 +120,18 @@ constructor (gameWidth, gameHeight){
       this.frameY = 0;
 }
 draw(context){
-  context.drawImage(this.image, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+  context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
 }
 update(){
   this.x--;
 }
 }
-
-function handleEnemies(){
-
+//enemies.push(new Enemy(canvas.width, canvas.height));
+function handleEnemies(deltaTime){
+      enemies.forEach(enemy => {
+        enemy.draw(ctx);
+        enemy.update();
+      });
 }
 
 function displayStatusText(){
@@ -132,17 +141,21 @@ function displayStatusText(){
 const input = new InputHandler();
 const player = new Player(canvas.width, canvas.height);
 const background = new Background(canvas.width, canvas.height);
-const enemy1 = new Enemy(canvas.width, canvas.height);
 
-function animate(){
+let lastTime = 0;
+let enemyTimer = 0;
+let enemyInterval = 1000;
+
+function animate(timeStamp){
+  const deltaTime = timeStamp - lastTime;
+  lastTime = timeStamp;
   ctx.clearRect(0,0,canvas.width, canvas.height);
     background.draw(ctx);
     background.update();
     player.draw(ctx);
     player.update(input);
-    enemy1.draw(ctx);
-    enemy1.update();
+    handleEnemies(deltaTime)
     requestAnimationFrame(animate);
 }
-animate();
+animate(0);
 });
