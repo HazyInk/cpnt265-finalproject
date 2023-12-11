@@ -34,17 +34,17 @@ class Player {
     constructor(gameWidth, gameHeight){
       this.gameWidth = gameWidth;
       this.gameHeight = gameHeight;
-      this.width = 355;
+      this.width = 357;
       this.height = 350;
       this.x = 0;
       this.y = this.gameHeight - this.height;
       this.image = document.getElementById('playerImage');
       this.frameX = 0;
-      this.maxFrame = 7;
+      this.maxFrame = 6;
       this.frameY = 0;
-      //this.fps = 20;
-      //this.frameTimer = 0;
-      //this.frameInterval = 1000/this.fps;
+      this.fps = 20;
+      this.frameTimer = 0;
+      this.frameInterval = 1000/this.fps;
       this.speed = 0;
       this.vy = 0;
       this.weight = 1;
@@ -54,8 +54,13 @@ class Player {
       context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     update(input, deltaTime){
-        if (this.frameX >= this.maxFrame) this.frameX = 0;
-        else this.frameX++;
+        if (this.frameTimer > this.frameInterval){
+          if (this.frameX >= this.maxFrame) this.frameX = 0;
+          else this.frameX++;
+          this.frameTimer = 0;
+        } else {
+          this.frameTimer += deltaTime
+        }
         //keys
         if (input.keys.indexOf('ArrowRight') > -1){
           this.speed = 5;
@@ -117,20 +122,38 @@ constructor (gameWidth, gameHeight){
       this.y = this.gameHeight - this.height;
       this.image = document.getElementById('enemyImage');
       this.frameX = 0;
-      this.frameY = 0;
+      this.maxFrame = 5;
+      this.fps = 20;
+      this.frameTimer = 0;
+      this.frameInterval = 1000/this.fps;
+      this.speed = 8;
 }
 draw(context){
   context.drawImage(this.image, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
 }
-update(){
-  this.x--;
+update(deltaTime){
+    if (this.frameTimer > this.frameInterval){
+    if (this.frameX >= this.maxFrame) this.frameX = 0;
+    else this.frameX++;
+    this.frameTimer = 0;
+  } else {
+    this.frameTimer += deltaTime;
+  }
+
+  this.x -= this.speed;
 }
 }
-//enemies.push(new Enemy(canvas.width, canvas.height));
+
 function handleEnemies(deltaTime){
+  if (enemyTimer > enemyInterval + randomEnemyInterval){
+    enemies.push(new Enemy(canvas.width, canvas.height));
+    enemyTimer = 0;
+  } else {
+    enemyTimer += deltaTime;
+  }
       enemies.forEach(enemy => {
         enemy.draw(ctx);
-        enemy.update();
+        enemy.update(deltaTime);
       });
 }
 
@@ -145,6 +168,7 @@ const background = new Background(canvas.width, canvas.height);
 let lastTime = 0;
 let enemyTimer = 0;
 let enemyInterval = 1000;
+let randomEnemyInterval = Math.random() * 1000 + 500;
 
 function animate(timeStamp){
   const deltaTime = timeStamp - lastTime;
@@ -153,7 +177,7 @@ function animate(timeStamp){
     background.draw(ctx);
     background.update();
     player.draw(ctx);
-    player.update(input);
+    player.update(input, deltaTime);
     handleEnemies(deltaTime)
     requestAnimationFrame(animate);
 }
