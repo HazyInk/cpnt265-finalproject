@@ -1,4 +1,4 @@
-# cpnt265 Final Project
+# CPNT-265 Final Project
 # Live Site
 TBD
 # Assets
