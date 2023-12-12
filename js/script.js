@@ -10,6 +10,8 @@ let gameOver = false;
 class InputHandler {
   constructor(){
     this.keys = [];
+    this.touchY = '';
+    this.touchTreshold = 30;
     window.addEventListener('keydown', e => {
         if (( e.key === 'ArrowDown' || 
               e.key === 'ArrowUp' || 
@@ -28,6 +30,18 @@ class InputHandler {
             this.keys.splice(this.keys.indexOf(e.key), 1);
           }
           console.log(e.key, this.keys);
+      });
+      window.addEventListener('touchstart' , e =>{
+        this.touchY = (e.changedTouches[0].pageY);
+      });
+      window.addEventListener('touchmove' , e =>{
+        const swipeDistance = e.changedTouches[0].pageY - this.touchY;
+        if (swipeDistance < -this.touchTreshold && this.keys.indexOf('swipe up') === -1) this.keys.push('swipe up');
+        else if (swipeDistance > this.touchTreshold && this.keys.indexOf('swipe down') === -1) this.keys.push('swipe down');
+      });
+      window.addEventListener('touchend' , e =>{
+        this.keys.splice(this.keys.indexOf('swipe up'), 1);
+        this.keys.splice(this.keys.indexOf('swipe down'), 1);
       });
   }
 }
@@ -138,9 +152,9 @@ class Background {
     }
     update(){
       if (score > 5) this.speed = 7;
-      if (score > 10) this.speed = 10;
-      if (score > 15) this.speed = 12;
-      if (score > 20) this.speed = 15;
+      if (score > 10) this.speed = 9;
+      if (score > 15) this.speed = 11;
+      if (score > 20) this.speed = 13;
       this.x -= this.speed;
       if (this.x < 0 - this.width) this.x = 0;
     }
