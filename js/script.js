@@ -1,8 +1,8 @@
 window.addEventListener('load', function(){
 const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
-canvas.width = 1400;
-canvas.height = 720;
+canvas.width = 950;
+canvas.height = 650;
 let enemies = [];
 let score = 0;
 let gameOver = false;
@@ -145,7 +145,7 @@ class Background {
       this.x = 0;
       this.y = 0;
       this.width = 2400;
-      this.height = 720;
+      this.height = 650;
       this.speed = 5;
     }
     draw(context){
