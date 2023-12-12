@@ -11,7 +11,7 @@ class InputHandler {
   constructor(){
     this.keys = [];
     this.touchY = '';
-    this.touchTreshold = 30;
+    this.touchTreshold = 50;
     window.addEventListener('keydown', e => {
         if (( e.key === 'ArrowDown' || 
               e.key === 'ArrowUp' || 
@@ -38,6 +38,8 @@ class InputHandler {
         const swipeDistance = e.changedTouches[0].pageY - this.touchY;
         if (swipeDistance < -this.touchTreshold && this.keys.indexOf('swipe up') === -1) this.keys.push('swipe up');
         else if (swipeDistance > this.touchTreshold && this.keys.indexOf('swipe down') === -1) this.keys.push('swipe down');
+            this.keys.push('swipe down');
+            if (gameOver) restartGame();
       });
       window.addEventListener('touchend' , e =>{
         this.keys.splice(this.keys.indexOf('swipe up'), 1);
@@ -108,7 +110,7 @@ class Player {
           this.speed = 5;
         } else if (input.keys.indexOf('ArrowLeft') > -1) {
           this.speed = -5;
-        } else if (input.keys.indexOf('ArrowUp') > -1 && this.onGround()) {
+        } else if ((input.keys.indexOf('ArrowUp') > -1 || input.keys.indexOf('swipe up') > -1) && this.onGround()) {
           this.vy -= 30;
         } else {
           this.speed = 0;
@@ -270,7 +272,7 @@ function animate(timeStamp){
     player.update(input, deltaTime, enemies);
     handleEnemies(deltaTime);
     displayStatusText(ctx);
-    if (!gameOver) requestAnimationFrame(animate);
+  if (!gameOver) requestAnimationFrame(animate);
 }
 animate(0);
 });
