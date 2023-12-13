@@ -237,10 +237,10 @@ context.fillText('score: ' + score, 22, 52);
 if (gameOver){
   context.textAlign = 'center';
   context.fillStyle = 'black';
-  context.fillText('GAME OVER! hit enter to restart', canvas.width/2, 200);
+  context.fillText('GAME OVER! hit enter or swipe down to restart', canvas.width/2, 200);
   context.textAlign = 'center';
   context.fillStyle = 'white';
-  context.fillText('GAME OVER! hit enter to restart', canvas.width/2 + 2, 202);
+  context.fillText('GAME OVER! hit enter or swipe down to restart', canvas.width/2 + 2, 202);
 }
 }
 
